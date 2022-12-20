@@ -1,9 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"log"
+)
 
 func main() {
-	fmt.Println(fib2(100))
+	// LIS ex1
+	nums1 := []int{5, 7, 4, -3, 9, 1, 10, 4, 5, 8, 9, 3}
+	expected := 6
+	got := lis(nums1)
+	if expected != got {
+		log.Fatalf("Expected %d, got %d", expected, got)
+	}
+
+	log.Println("foo")
 }
 
 func fib1(n int) int {
@@ -29,4 +39,10 @@ func fib2(n int) int {
 	}
 
 	return F[n]
+}
+
+func lis(nums []int) int {
+	// Find longest increasing subsequence in nums
+	// return length
+	return 0
 }
