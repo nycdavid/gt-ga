@@ -10,10 +10,8 @@ func main() {
 	expected := 6
 	got := lis(nums1)
 	if expected != got {
-		log.Fatalf("Expected %d, got %d", expected, got)
+		log.Printf("[FAIL]: Expected %d, got %d", expected, got)
 	}
-
-	log.Println("foo")
 }
 
 func fib1(n int) int {
@@ -44,5 +42,9 @@ func fib2(n int) int {
 func lis(nums []int) int {
 	// Find longest increasing subsequence in nums
 	// return length
-	return 0
+	maxLen := 0
+	T := make([]int, len(nums))
+	T[0] = 1 // base case
+
+	return maxLen
 }
