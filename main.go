@@ -45,6 +45,8 @@ func lis(nums []int) int {
 	maxLen := 0
 	T := make([]int, len(nums))
 	T[0] = 1 // base case
+	T[1] = 2
+	T[2] = 1 // this is true because the solution MUST include nums[2], according to our recurrence.
 
 	return maxLen
 }
