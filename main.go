@@ -43,10 +43,42 @@ func lis(nums []int) int {
 	// Find longest increasing subsequence in nums
 	// return length
 	maxLen := 0
-	T := make([]int, len(nums))
-	T[0] = 1 // base case
-	T[1] = 2
-	T[2] = 1 // this is true because the solution MUST include nums[2], according to our recurrence.
+	T := make([]map[string]int, len(nums))
+	T[0] = map[string]int{
+		"value":  nums[0],
+		"length": 1,
+	} // base case
+	T[1] = map[string]int{
+		"value":  nums[1],
+		"length": 1 + T[0]["value"],
+	}
+
+	for i, num := range nums {
+		if i == 0 || i == 1 {
+			continue
+		}
+
+		// T[i] = 1 + constrained max
+		T[i] = map[string]int{
+			"value":  num,
+			"length": 1 + constrainedMax(T, i),
+		}
+	}
 
 	return maxLen
+}
+
+func constrainedMax(T []map[string]int, i int) int {
+	// find a j such that:
+	// - j <= i
+	// - aj < ai
+
+	max := 0
+	for j, v := range T {
+		if j <= i && v["value"] < T[i]["value"] && T[i]["length"] >= max {
+			max = T[i]["length"]
+		}
+	}
+
+	return max
 }
