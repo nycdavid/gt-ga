@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 )
 
 func main() {
@@ -11,7 +12,11 @@ func main() {
 	got := lis(nums1)
 	if expected != got {
 		log.Printf("[FAIL]: Expected %d, got %d", expected, got)
+		os.Exit(1)
 	}
+
+	log.Printf("[SUCCESS]: Example 1")
+	os.Exit(0)
 }
 
 func fib1(n int) int {
@@ -62,6 +67,12 @@ func lis(nums []int) int {
 		T[i] = map[string]int{
 			"value":  num,
 			"length": 1 + constrainedMax(T, i),
+		}
+	}
+
+	for _, v := range T {
+		if v["length"] > maxLen {
+			maxLen = v["length"]
 		}
 	}
 
