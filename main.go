@@ -20,7 +20,7 @@ func main() {
 
 	// Example 2: LCS
 	X := []string{"B", "C", "D", "B", "C", "D", "A"}
-	Y := []string{"A", "B", "E", "C", "B", "A", "B"}
+	Y := []string{"A", "B", "E", "C", "B", "A"}
 
 	expected = 4
 	got = lcs(X, Y)
@@ -59,20 +59,19 @@ func fib2(n int) int {
 }
 
 func lcs(X []string, Y []string) int {
-	L := make([][]int, len(X))
+	L := make([][]int, len(X)+1)
 	for i, _ := range L {
-		L[i] = make([]int, len(Y))
+		L[i] = make([]int, len(Y)+1)
 	}
 
 	i, j := 1, 1
-
 	for i < len(L) {
 		for j < len(L[i]) {
-			if X[i] == Y[j] {
-				L[i][j] = L[i-1][j-1] + 1
+			if X[i-1] == Y[j-1] {
+				L[i][j] = 1 + L[i-1][j-1]
 			} else {
-				a := L[i][j-1]
-				b := L[i-1][j]
+				a := L[i-1][j]
+				b := L[i][j-1]
 
 				if a > b {
 					L[i][j] = a
@@ -82,11 +81,13 @@ func lcs(X []string, Y []string) int {
 			}
 			j++
 		}
+		j = 1
 		i++
 	}
 
-	fmt.Println(L)
-	return L[len(X)-1][len(Y)-1]
+	printTable(L)
+
+	return L[len(L)-1][len(L[len(L)-1])-1]
 }
 
 func lis(nums []int) int {
@@ -137,4 +138,10 @@ func constrainedMax(T []map[string]int, i int) int {
 	}
 
 	return max
+}
+
+func printTable(T [][]int) {
+	for _, row := range T {
+		fmt.Println(row)
+	}
 }
