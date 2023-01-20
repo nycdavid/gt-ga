@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 )
@@ -16,7 +17,20 @@ func main() {
 	}
 
 	log.Printf("[SUCCESS]: Example 1")
-	os.Exit(0)
+
+	// Example 2: LCS
+	X := []string{"B", "C", "D", "B", "C", "D", "A"}
+	Y := []string{"A", "B", "E", "C", "B", "A", "B"}
+
+	expected = 4
+	got = lcs(X, Y)
+
+	if expected != got {
+		log.Printf("[FAIL]: Expected %d, got %d", expected, got)
+		os.Exit(1)
+	}
+
+	log.Printf("[SUCCESS]: Example 2")
 }
 
 func fib1(n int) int {
@@ -42,6 +56,37 @@ func fib2(n int) int {
 	}
 
 	return F[n]
+}
+
+func lcs(X []string, Y []string) int {
+	L := make([][]int, len(X))
+	for i, _ := range L {
+		L[i] = make([]int, len(Y))
+	}
+
+	i, j := 1, 1
+
+	for i < len(L) {
+		for j < len(L[i]) {
+			if X[i] == Y[j] {
+				L[i][j] = L[i-1][j-1] + 1
+			} else {
+				a := L[i][j-1]
+				b := L[i-1][j]
+
+				if a > b {
+					L[i][j] = a
+				} else {
+					L[i][j] = b
+				}
+			}
+			j++
+		}
+		i++
+	}
+
+	fmt.Println(L)
+	return L[len(X)-1][len(Y)-1]
 }
 
 func lis(nums []int) int {
