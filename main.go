@@ -31,6 +31,12 @@ func main() {
 	}
 
 	log.Printf("[SUCCESS]: Example 2")
+
+	// Example 3: DPV 6.1
+	ex3X := []int{5, 15, -30, 10, -5, 40, 10}
+	// ex3Sol := []int{10, -5, 40, 10}
+	ex3_got := DPV6_1(ex3X)
+	fmt.Println(ex3_got)
 }
 
 func fib1(n int) int {
@@ -123,6 +129,51 @@ func lis(nums []int) int {
 	}
 
 	return maxLen
+}
+
+func DPV6_1(X []int) []int {
+	T := make([]map[string]interface{}, len(X))
+	for i, _ := range T {
+		T[i] = make(map[string]interface{})
+		T[i]["subsequence"] = make([]int, 1)
+		T[i]["sum"] = 0
+	}
+
+	T[0]["subsequence"] = []int{X[0]}
+	T[0]["sum"] = X[0]
+
+	i := 1
+	for i < len(X) {
+		Xi := X[i]
+
+		a := T[i-1]["sum"].(int) + Xi
+		b := Xi
+
+		if a > b {
+			copy(
+				T[i]["subsequence"].([]int),
+				T[i-1]["subsequence"].([]int),
+			)
+
+			T[i]["subsequence"] = append(T[i]["subsequence"].([]int), Xi)
+			T[i]["sum"] = a
+		} else {
+			T[i]["subsequence"] = []int{Xi}
+			T[i]["sum"] = Xi
+		}
+		i++
+	}
+
+	tableMaxIdx := 0
+	max := 0
+	for i, entry := range T {
+		if entry["sum"].(int) > max {
+			tableMaxIdx = i
+		}
+	}
+
+	fmt.Println(T)
+	return T[tableMaxIdx]["subsequence"].([]int)
 }
 
 func constrainedMax(T []map[string]int, i int) int {
