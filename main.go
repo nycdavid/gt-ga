@@ -34,9 +34,14 @@ func main() {
 
 	// Example 3: DPV 6.1
 	ex3X := []int{5, 15, -30, 10, -5, 40, 10}
-	// ex3Sol := []int{10, -5, 40, 10}
+	ex3Sol := []int{10, -5, 40, 10}
 	ex3_got := DPV6_1(ex3X)
-	fmt.Println(ex3_got)
+	if !matchArray(ex3_got, ex3Sol) {
+		log.Printf("[FAIL]: Expected , got")
+		os.Exit(1)
+	}
+
+	log.Printf("[SUCCESS]: Example 3")
 }
 
 func fib1(n int) int {
@@ -93,7 +98,9 @@ func lcs(X []string, Y []string) int {
 
 	printTable(L)
 
-	return L[len(L)-1][len(L[len(L)-1])-1]
+	sol := L[len(L)-1][len(L[len(L)-1])-1]
+
+	return sol
 }
 
 func lis(nums []int) int {
@@ -150,6 +157,7 @@ func DPV6_1(X []int) []int {
 		b := Xi
 
 		if a > b {
+			T[i]["subsequence"] = make([]int, len(T[i-1]["subsequence"].([]int)))
 			copy(
 				T[i]["subsequence"].([]int),
 				T[i-1]["subsequence"].([]int),
@@ -195,4 +203,21 @@ func printTable(T [][]int) {
 	for _, row := range T {
 		fmt.Println(row)
 	}
+}
+
+func matchArray(A []int, B []int) bool {
+	if len(A) != len(B) {
+		return false
+	}
+
+	matches := true
+
+	for i, val := range B {
+		if A[i] != val {
+			matches = false
+			break
+		}
+	}
+
+	return matches
 }
