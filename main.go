@@ -2,46 +2,81 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
 )
 
 func main() {
 	// LIS ex1
-	nums1 := []int{5, 7, 4, -3, 9, 1, 10, 4, 5, 8, 9, 3}
-	expected := 6
-	got := lis(nums1)
-	if expected != got {
-		log.Printf("[FAIL]: Expected %d, got %d", expected, got)
-		os.Exit(1)
+	// nums1 := []int{5, 7, 4, -3, 9, 1, 10, 4, 5, 8, 9, 3}
+	// expected := 6
+	// got := lis(nums1)
+	// if expected != got {
+	// 	log.Printf("[FAIL]: Expected %d, got %d", expected, got)
+	// 	os.Exit(1)
+	// }
+	//
+	// log.Printf("[SUCCESS]: Example 1")
+	//
+	// // Example 2: LCS
+	// X := []string{"B", "C", "D", "B", "C", "D", "A"}
+	// Y := []string{"A", "B", "E", "C", "B", "A"}
+	//
+	// expected = 4
+	// got = lcs(X, Y)
+	//
+	// if expected != got {
+	// 	log.Printf("[FAIL]: Expected %d, got %d", expected, got)
+	// 	os.Exit(1)
+	// }
+	//
+	// log.Printf("[SUCCESS]: Example 2")
+	//
+	// // Example 3: DPV 6.1
+	// ex3X := []int{5, 15, -30, 10, -5, 40, 10}
+	// ex3Sol := []int{10, -5, 40, 10}
+	// ex3_got := DPV6_1(ex3X)
+	// if !matchArray(ex3_got, ex3Sol) {
+	// 	log.Printf("[FAIL]: Expected , got")
+	// 	os.Exit(1)
+	// }
+	//
+	// log.Printf("[SUCCESS]: Example 3")
+	hotelStops6_2()
+}
+
+func hotelStops6_2() {
+	penalty := func(x int) int {
+		return (200 - x) * (200 - x)
+	}
+	stops := []int{200, 400, 600, 800, 1000}
+
+	T := make([]map[string]interface{}, len(stops))
+
+	T[0] = make(map[string]interface{})
+	T[0]["penalty"] = stops[0]
+	T[0]["stops"] = []int{0}
+
+	for i, _ := range T {
+		if i == 0 {
+			continue
+		}
+
+		T[i] = make(map[string]interface{})
+
+		a := penalty(T[i-1]["penalty"].(int)) + penalty(stops[i]-stops[i-1])
+		b := penalty(stops[i])
+
+		if a <= b {
+			T[i]["penalty"] = a
+			T[i]["stops"] = append(T[i-1]["stops"].([]int), i)
+		} else {
+			T[i]["penalty"] = b
+			T[i]["stops"] = []int{i}
+		}
 	}
 
-	log.Printf("[SUCCESS]: Example 1")
-
-	// Example 2: LCS
-	X := []string{"B", "C", "D", "B", "C", "D", "A"}
-	Y := []string{"A", "B", "E", "C", "B", "A"}
-
-	expected = 4
-	got = lcs(X, Y)
-
-	if expected != got {
-		log.Printf("[FAIL]: Expected %d, got %d", expected, got)
-		os.Exit(1)
+	for _, row := range T {
+		fmt.Println(row)
 	}
-
-	log.Printf("[SUCCESS]: Example 2")
-
-	// Example 3: DPV 6.1
-	ex3X := []int{5, 15, -30, 10, -5, 40, 10}
-	ex3Sol := []int{10, -5, 40, 10}
-	ex3_got := DPV6_1(ex3X)
-	if !matchArray(ex3_got, ex3Sol) {
-		log.Printf("[FAIL]: Expected , got")
-		os.Exit(1)
-	}
-
-	log.Printf("[SUCCESS]: Example 3")
 }
 
 func fib1(n int) int {
