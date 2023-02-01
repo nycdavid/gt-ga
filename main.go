@@ -52,7 +52,7 @@ func hotelStops6_2() {
 	T := make([]map[string]interface{}, len(stops))
 
 	T[0] = make(map[string]interface{})
-	T[0]["penalty"] = stops[0]
+	T[0]["penalty"] = penalty(stops[0])
 	T[0]["stops"] = []int{0}
 
 	for i, _ := range T {
@@ -62,7 +62,7 @@ func hotelStops6_2() {
 
 		T[i] = make(map[string]interface{})
 
-		a := penalty(T[i-1]["penalty"].(int)) + penalty(stops[i]-stops[i-1])
+		a := T[i-1]["penalty"].(int) + penalty(stops[i]-stops[i-1])
 		b := penalty(stops[i])
 
 		if a <= b {
