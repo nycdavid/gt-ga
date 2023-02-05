@@ -6,8 +6,9 @@ import (
 )
 
 func main() {
-	hotelStops6_2()
-	yuckdonalds()
+	// hotelStops6_2()
+	// yuckdonalds()
+	corruptTextDoc()
 }
 
 func hotelStops6_2() {
@@ -89,6 +90,59 @@ func yuckdonalds() {
 			T[i] = a
 		} else {
 			T[i] = b
+		}
+
+		i++
+	}
+
+	for _, row := range T {
+		fmt.Println(row)
+	}
+}
+
+func corruptTextDoc() {
+	dictionary := []string{"it", "was", "the", "best", "of", "times"}
+	dict := func(w string) bool {
+		present := (func() bool {
+			for _, entry := range dictionary {
+				if w == entry {
+					return true
+				}
+			}
+			return false
+		})()
+
+		if present {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	T := make([]map[string]any, 1)
+	T[0] = make(map[string]any)
+	T[0]["word"] = ""
+	T[0]["words"] = []string{}
+
+	chars := []rune("itwasthebestoftimes")
+	i := 1
+	for i < len(chars) {
+		T = append(T, map[string]any{})
+		T[i]["word"] = ""
+		T[i]["words"] = []string{}
+
+		char := string(chars[i-1])
+
+		candidate := T[i-1]["word"].(string) + char
+		if dict(candidate) {
+			T[i]["words"] = append(T[i-1]["words"].([]string), candidate)
+			T[i]["word"] = ""
+		} else {
+			dupWords := make([]string, len(T[i-1]["words"].([]string)))
+			copy(dupWords, T[i-1]["words"].([]string))
+
+			T[i]["word"] = candidate
+			T[i]["words"] = dupWords
 		}
 
 		i++
