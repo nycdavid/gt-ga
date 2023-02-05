@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"math"
 )
 
 func main() {
 	hotelStops6_2()
+	yuckdonalds()
 }
 
 func hotelStops6_2() {
@@ -13,31 +15,83 @@ func hotelStops6_2() {
 		return (200 - x) * (200 - x)
 	}
 
-	stops := []int{200, 400, 600, 800, 1000}
+	stops := []int{0, 200, 250, 600, 1500, 2000}
 
-	T := make([]map[string]interface{}, len(stops)+1)
+	T := make([]map[string]any, len(stops))
 
-	T[0] = make(map[string]interface{})
-	T[0]["penalty"] = penalty(stops[0])
-	T[0]["stops"] = []int{0}
+	T[0] = make(map[string]any)
+	T[0]["penalty"] = 0
+	T[0]["stops"] = []int{}
 
-	for j, row := range T {
+	for j, _ := range T {
 		if j == 0 {
 			continue
 		}
 
-		T[j] = make(map[string]interface{})
+		T[j] = make(map[string]any)
 
 		i := 0
-		min := 0
+		min := penalty(stops[len(stops)-1])
 		for i < j {
 			calc := T[i]["penalty"].(int) + penalty(stops[j]-stops[i])
 			if calc < min {
 				min = calc
 			}
+			i++
+		}
+		T[j]["penalty"] = min
+	}
+
+	for _, row := range T {
+		fmt.Println(row)
+	}
+}
+
+func yuckdonalds() {
+	fmt.Println("=====================")
+	fmt.Println("DPV 6.3: Yuckdonald's")
+	fmt.Println("=====================")
+
+	K := 4
+	m := []int{0, 4, 6, 11, 13, 18}
+	p := []int{0, 2, 2, 1, 5, 7}
+
+	alpha := func(m_i int, m_j int) int {
+		if math.Abs(float64(m_i)-float64(m_j)) < float64(K) {
+			return 0
+		} else {
+			return 1
+		}
+	}
+
+	// idx 0-5, 6 elements
+	T := make([]int, len(m))
+	T[0] = 0
+	T[1] = p[1]
+
+	i := 2
+	for i < len(m) {
+		j := 0
+		a := 0
+
+		for j < i {
+			if T[j]+alpha(m[j], m[i]) > j {
+				j = T[j]
+			}
+
 			j++
 		}
-		row["penalty"] = min
+
+		a = j
+		b := p[i]
+
+		if a >= b {
+			T[i] = a
+		} else {
+			T[i] = b
+		}
+
+		i++
 	}
 
 	for _, row := range T {
