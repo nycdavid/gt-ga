@@ -114,25 +114,30 @@ func corruptTextDoc() {
 	}
 
 	build := func(input string, dictionary []string) []map[string]any {
-		T := make([]map[string]any, len(input))
+		T := make([]map[string]any, len(input)+1)
+		T[0] = make(map[string]any)
 		T[0]["valid"] = true
-		T[0]["words"] = []string{""}
-		T[0]["word"] = ""
+		T[0]["words"] = []string{}
 
-		sequence := []string{}
 		chars := []rune(input)
-		// WRONG way
-		for i, char := range chars {
-			if i == 0 {
-				continue
-			}
+		for i, _ := range chars {
+			// 0th char but T[1]
+			exists := false
 
-			if dict(T[i-1]["word"].(string), dictionary) || T[i-1]["word"].(string) == "" {
-				valid := dict(string(char), dictionary)
-				T[i]["valid"] = valid
-				if valid {
+			T[i+1] = make(map[string]any)
+			T[i+1]["words"] = []string{}
+
+			for j := 0; j <= i; j++ {
+				if dict(string(chars[j:(i+1)]), dictionary) && T[j]["valid"].(bool) {
+					T[i+1]["words"] = append(
+						T[j]["words"].([]string),
+						string(chars[j:(i+1)]),
+					)
+					exists = true
 				}
 			}
+
+			T[i+1]["valid"] = exists
 		}
 
 		return T
@@ -164,7 +169,7 @@ func corruptTextDoc() {
 		},
 	}
 
-	for _, t := range tt {
+	for i, t := range tt {
 		T := build(t.input, t.dictionary)
 
 		last := T[len(T)-1]
@@ -175,13 +180,21 @@ func corruptTextDoc() {
 		expected = t.expectedValid
 		got = last["valid"].(bool)
 		if expected != got {
-			log.Fatalf("Expected last[\"valid\"] to be %s, got %s", expected, got)
+			fmt.Println("DP table:")
+			for _, row := range T {
+				fmt.Println(row)
+			}
+			log.Fatalf("[Test %d]: Expected last[\"valid\"] to be %v, got %v", i+1, expected, got)
 		}
 
 		expected = t.expectedWords
 		got = strings.Join(last["words"].([]string), " ")
 		if expected != got {
-			log.Fatalf("Expected last[\"words\"] to be %s, got %s", expected, got)
+			fmt.Println("DP table:")
+			for _, row := range T {
+				fmt.Println(row)
+			}
+			log.Fatalf("[Test %d]: Expected last[\"words\"] to be %s, got %s", i+1, expected, got)
 		}
 	}
 }
