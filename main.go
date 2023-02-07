@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
+	"strings"
 )
 
 func main() {
@@ -101,55 +103,63 @@ func yuckdonalds() {
 }
 
 func corruptTextDoc() {
-	dictionary := []string{"it", "was", "the", "best", "of", "times"}
-	dict := func(w string) bool {
-		present := (func() bool {
-			for _, entry := range dictionary {
-				if w == entry {
-					return true
-				}
+	dict := func(w string, dictionary []string) bool {
+		for _, entry := range dictionary {
+			if w == entry {
+				return true
 			}
-			return false
-		})()
-
-		if present {
-			return true
-		} else {
-			return false
-		}
-	}
-
-	T := make([]map[string]any, 1)
-	T[0] = make(map[string]any)
-	T[0]["word"] = ""
-	T[0]["words"] = []string{}
-
-	chars := []rune("itwasthebestoftimes")
-	i := 1
-	for i < len(chars) {
-		T = append(T, map[string]any{})
-		T[i]["word"] = ""
-		T[i]["words"] = []string{}
-
-		char := string(chars[i-1])
-
-		candidate := T[i-1]["word"].(string) + char
-		if dict(candidate) {
-			T[i]["words"] = append(T[i-1]["words"].([]string), candidate)
-			T[i]["word"] = ""
-		} else {
-			dupWords := make([]string, len(T[i-1]["words"].([]string)))
-			copy(dupWords, T[i-1]["words"].([]string))
-
-			T[i]["word"] = candidate
-			T[i]["words"] = dupWords
 		}
 
-		i++
+		return false
 	}
 
-	for _, row := range T {
-		fmt.Println(row)
+	build := func (input string, dictionary []string) []map[string]any {
+		T := make([]map[string]any, len(input))
+		T[0]["valid"] = true
+		T[0]["words"] = []string{""}
+
+		return T
+	}
+
+	tests := []struct {
+		input         string
+		expectedValid bool
+		expectedWords string
+		dictionary    []string
+	}{
+		{
+			input:         "itwasthebestoftimes",
+			expectedValid: true,
+			expectedWords: "it was the best of times",
+			dictionary:    []string{"times", "best", "of", "the", "it", "was"},
+		},
+		{
+			input: "itwaszthebestoftimes",,
+			expectedValid: false,
+			expectedWords: "",
+			dictionary:    []string{"times", "best", "of", "the", "it", "was"},
+		},
+	}
+
+	for _, tt := range tests {
+		T := build(tt.input, tt.dictionary)
+
+		last := T[len(T)-1]
+
+		var expected any
+		var got any
+
+		expected = tt.expectedValid
+		got = last["valid"].(bool)
+		if expected != got {
+			log.Fatalf("Expected last[\"valid\"] to be %s, got %s", expected, got)
+		}
+
+		expected = tt.expectedWords
+		got = strings.Join(last["words"].([]string), " ")
+		if expected != got {
+			log.Fatalf("Expected last[\"words\"] to be %s, got %s", expected, got)
+		}
 	}
 }
 
