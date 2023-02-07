@@ -113,15 +113,32 @@ func corruptTextDoc() {
 		return false
 	}
 
-	build := func (input string, dictionary []string) []map[string]any {
+	build := func(input string, dictionary []string) []map[string]any {
 		T := make([]map[string]any, len(input))
 		T[0]["valid"] = true
 		T[0]["words"] = []string{""}
+		T[0]["word"] = ""
+
+		sequence := []string{}
+		chars := []rune(input)
+		// WRONG way
+		for i, char := range chars {
+			if i == 0 {
+				continue
+			}
+
+			if dict(T[i-1]["word"].(string), dictionary) || T[i-1]["word"].(string) == "" {
+				valid := dict(string(char), dictionary)
+				T[i]["valid"] = valid
+				if valid {
+				}
+			}
+		}
 
 		return T
 	}
 
-	tests := []struct {
+	tt := []struct {
 		input         string
 		expectedValid bool
 		expectedWords string
@@ -131,31 +148,37 @@ func corruptTextDoc() {
 			input:         "itwasthebestoftimes",
 			expectedValid: true,
 			expectedWords: "it was the best of times",
-			dictionary:    []string{"times", "best", "of", "the", "it", "was"},
+			dictionary:    []string{"times", "best", "of", "the", "it", "was", "wash"},
 		},
 		{
-			input: "itwaszthebestoftimes",,
+			input:         "itwashthebestoftimes",
+			expectedValid: true,
+			expectedWords: "it wash the best of times",
+			dictionary:    []string{"times", "best", "of", "the", "it", "was", "wash"},
+		},
+		{
+			input:         "itwaszbestoftimes",
 			expectedValid: false,
 			expectedWords: "",
-			dictionary:    []string{"times", "best", "of", "the", "it", "was"},
+			dictionary:    []string{"times", "best", "of", "the", "it", "was", "wash"},
 		},
 	}
 
-	for _, tt := range tests {
-		T := build(tt.input, tt.dictionary)
+	for _, t := range tt {
+		T := build(t.input, t.dictionary)
 
 		last := T[len(T)-1]
 
 		var expected any
 		var got any
 
-		expected = tt.expectedValid
+		expected = t.expectedValid
 		got = last["valid"].(bool)
 		if expected != got {
 			log.Fatalf("Expected last[\"valid\"] to be %s, got %s", expected, got)
 		}
 
-		expected = tt.expectedWords
+		expected = t.expectedWords
 		got = strings.Join(last["words"].([]string), " ")
 		if expected != got {
 			log.Fatalf("Expected last[\"words\"] to be %s, got %s", expected, got)
