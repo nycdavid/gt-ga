@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"math"
@@ -225,6 +226,16 @@ func cuttingCloth() {
 	for _, row := range T {
 		fmt.Println(row)
 	}
+}
+
+func find(slice []any, predicate func(el any) bool) (int, error) {
+	for i, el := range slice {
+		if predicate(el) {
+			return i, nil
+		}
+	}
+
+	return 0, errors.New("not found")
 }
 
 func fib1(n int) int {
