@@ -10,7 +10,8 @@ import (
 func main() {
 	// hotelStops6_2()
 	// yuckdonalds()
-	corruptTextDoc()
+	// corruptTextDoc()
+	cuttingCloth()
 }
 
 func hotelStops6_2() {
@@ -196,6 +197,33 @@ func corruptTextDoc() {
 			}
 			log.Fatalf("[Test %d]: Expected last[\"words\"] to be %s, got %s", i+1, expected, got)
 		}
+	}
+}
+
+func cuttingCloth() {
+	p := [][]int{
+		[]int{2, 3},
+		[]int{4, 7},
+		[]int{1, 4},
+	}
+
+	c := []int{2, 4, 6}
+
+	cloth := []int{10, 15}
+
+	build := func(cloth []int, c []int, p [][]int) [][]int {
+		T := make([][]int, cloth[1])
+		for i, _ := range T {
+			T[i] = make([]int, cloth[0])
+		}
+
+		return T
+	}
+
+	T := build(cloth, c, p)
+
+	for _, row := range T {
+		fmt.Println(row)
 	}
 }
 
