@@ -10,34 +10,14 @@ func main() {
 }
 
 func knapsack() {
-	build := func(values []int, weights []int, bag int) []map[string]int {
-		T := make([]map[string]int, len(values)+1)
+	build := func(values []int, weights []int, B int) [][]int {
+		T := make([][]int, B+1)
 		for i, _ := range T {
-			T[i] = make(map[string]int)
+			T[i] = make([]int, len(values)+1)
 		}
 
-		// Base case
-		if weights[0] <= bag {
-			T[1]["value"] = values[0]
-			T[1]["weight"] = T[1]["weight"] + weights[0]
-		}
-
-		for i := 2; i <= len(values); i++ {
-			vi := values[i-1]
-			wi := weights[i-1]
-
-			if wi > bag-T[i-1]["weight"] && wi <= bag {
-				a := T[i-1]["weight"]
-				b := vi
-
-				if a > b {
-					T[i]["value"] = a
-					T[i]["weight"] = T[i-1]["weight"]
-				} else {
-					T[i]["value"] = vi
-					T[i]["weight"] = wi
-				}
-			}
+		for i := 1; i <= len(values); i++ {
+			T[i]
 		}
 
 		return T
