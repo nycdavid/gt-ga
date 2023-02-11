@@ -10,24 +10,43 @@ func main() {
 }
 
 func knapsack() {
+	optim := func(T [][]int, values []int, weights []int, b, i int) int {
+		wi := weights[i-1]
+		if wi > b {
+			return T[b][i-1]
+		}
+
+		x := values[i-1] + T[(b - wi)][i-1]
+		y := T[b][i-1]
+
+		if x > y {
+			return x
+		} else {
+			return y
+		}
+	}
+
 	build := func(values []int, weights []int, B int) [][]int {
 		T := make([][]int, B+1)
 		for i, _ := range T {
 			T[i] = make([]int, len(values)+1)
 		}
 
-		for i := 1; i <= len(values); i++ {
-			T[i]
+		for b := 1; b <= B; b++ {
+			for i := 1; i <= len(values); i++ {
+				T[b][i] = optim(T, values[0:i], weights, b, i)
+			}
 		}
 
 		return T
 	}
 
-	tt := []struct {
-		values   []int
-		weights  []int
-		bag      int
-		solution int
+	tests := []struct {
+		values    []int
+		weights   []int
+		bag       int
+		solution  int
+		maxWeight int
 	}{
 		{
 			values:   []int{15, 10, 8, 1},
@@ -37,15 +56,22 @@ func knapsack() {
 		},
 	}
 
-	for i, t := range tt {
-		T := build(t.values, t.weights, t.bag)
+	for i, tt := range tests {
+		T := build(tt.values, tt.weights, tt.bag)
 
-		if T[len(T)-1]["value"] != t.solution {
+		if T[tt.bag][len(tt.values)] != tt.solution {
 			fmt.Println("DP Table:")
 			for _, row := range T {
 				fmt.Println(row)
 			}
-			log.Fatalf("[Example %d]: expected %d, got %d", i+1, t.solution, T[len(T)-1]["value"])
+			log.Fatalf(
+				"[Example %d]: expected %d, got %d",
+				i+1,
+				tt.solution,
+				T[tt.bag][len(tt.values)],
+			)
+		} else {
+			log.Printf("[Example %d]: PASSED", i+1)
 		}
 	}
 }
