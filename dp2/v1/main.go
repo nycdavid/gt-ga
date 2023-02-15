@@ -6,7 +6,58 @@ import (
 )
 
 func main() {
-	knapsack()
+	// knapsack()
+	cmm()
+}
+
+func cmm() {
+	build := func(matrices [][][]int) [][]int {
+		I := len(matrices) - 1
+		J := len(matrices)
+		T := make([][]int, I)
+		for j, _ := range T {
+			T[j] = make([]int, J)
+		}
+
+		return T
+	}
+
+	tests := []struct {
+		matrices [][][]int
+	}{
+		{
+			matrices: [][][]int{
+				[][]int{
+					[]int{1, 2, 3, 4},
+					[]int{5, 6, 7, 8},
+					[]int{9, 10, 11, 12},
+				},
+				[][]int{
+					[]int{9, 8},
+					[]int{7, 6},
+					[]int{5, 4},
+					[]int{3, 2},
+				},
+				[][]int{
+					[]int{11, 12, 13},
+					[]int{14, 15, 16},
+				},
+				[][]int{
+					[]int{20},
+					[]int{21},
+					[]int{22},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		T := build(tt.matrices)
+
+		for _, row := range T {
+			fmt.Println(row)
+		}
+	}
 }
 
 func knapsack() {
