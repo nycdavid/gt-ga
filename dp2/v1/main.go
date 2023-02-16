@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 )
 
 func main() {
@@ -12,11 +13,37 @@ func main() {
 
 func cmm() {
 	build := func(matrices [][][]int) [][]int {
-		I := len(matrices) - 1
-		J := len(matrices)
+		rootNodeCost := func(i, l, j int) int {
+			// l is boundary
+			// left subtree is 1..l
+			// right subtree is l+1..j
+			mi := matrices[i]
+			ml := matrices[l]
+			mj := matrices[j]
+
+			return len(mi) * len(ml[0]) * len(mj[0])
+		}
+
+		N := len(matrices)
+		I := N - 1
 		T := make([][]int, I)
 		for j, _ := range T {
-			T[j] = make([]int, J)
+			T[j] = make([]int, N)
+		}
+
+		for s := 1; s < N; s++ {
+			for i := 1; i <= N-s; i++ {
+				j := i + s
+				T[i][j] = int(math.Inf(1))
+
+				for l := i; l <= j-1; l++ {
+					cur := rootNodeCost(i, l, j) + T[i][l] + T[l+1][j]
+
+					if cur < T[i][j] {
+						T[i][j] = cur
+					}
+				}
+			}
 		}
 
 		return T
