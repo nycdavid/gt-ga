@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"math"
 )
 
 func main() {
@@ -25,16 +24,15 @@ func cmm() {
 		}
 
 		N := len(matrices)
-		I := N - 1
-		T := make([][]int, I)
+		T := make([][]int, N)
 		for j, _ := range T {
 			T[j] = make([]int, N)
 		}
 
 		for s := 1; s < N; s++ {
-			for i := 1; i <= N-s; i++ {
+			for i := 1; i <= N-1-s; i++ {
 				j := i + s
-				T[i][j] = int(math.Inf(1))
+				T[i][j] = 1000000
 
 				for l := i; l <= j-1; l++ {
 					cur := rootNodeCost(i, l, j) + T[i][l] + T[l+1][j]
