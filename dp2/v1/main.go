@@ -31,7 +31,7 @@ func dpv617() {
 				if c > b {
 					continue
 				}
-				possible = (b%c) == 0 || (T[b-c] && (b%(b-c) == 0))
+				possible = T[b-c]
 				if possible {
 					continue
 				}
@@ -68,7 +68,7 @@ func dpv617() {
 		T := build(tt.coins, tt.value)
 
 		for t, row := range T {
-			fmt.Printf("[b: %d]: %v\n", t+1, row)
+			fmt.Printf("[b: %d]: %v\n", t, row)
 		}
 	}
 }
