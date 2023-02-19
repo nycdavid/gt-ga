@@ -7,7 +7,70 @@ import (
 
 func main() {
 	// knapsack()
-	cmm()
+	// cmm()
+	dpv617()
+}
+
+func dpv617() {
+	build := func(coins []int, value int) []bool {
+		T := make([]bool, value+1)
+		T[0] = true
+		T[1] = (func() bool {
+			for _, coin := range coins {
+				if coin == 1 {
+					return true
+				}
+			}
+
+			return false
+		})()
+
+		for b := 2; b <= value; b++ {
+			possible := false
+			for _, c := range coins {
+				if c > b {
+					continue
+				}
+				possible = (b%c) == 0 || (T[b-c] && (b%(b-c) == 0))
+				if possible {
+					continue
+				}
+			}
+
+			T[b] = possible
+		}
+
+		return T
+	}
+
+	tests := []struct {
+		name     string
+		coins    []int
+		value    int
+		solution bool
+	}{
+		{
+			name:     "Test 1",
+			coins:    []int{5, 10, 25},
+			value:    40,
+			solution: true,
+		},
+		{
+			name:     "Test 2",
+			coins:    []int{1, 5, 10, 25},
+			value:    41,
+			solution: true,
+		},
+	}
+
+	for _, tt := range tests {
+		fmt.Println(tt.name)
+		T := build(tt.coins, tt.value)
+
+		for t, row := range T {
+			fmt.Printf("[b: %d]: %v\n", t+1, row)
+		}
+	}
 }
 
 func cmm() {
