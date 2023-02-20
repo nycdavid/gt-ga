@@ -26,7 +26,7 @@ func dpv618() {
 					// Include it if T[i-1][b-(coins[i])] == true
 					if T[i-1][b-(coins[i-1])] {
 						T[i][b] = true
-					} else if T[i-1][coins[i-1]] {
+					} else if T[i-1][b] {
 						T[i][b] = true
 					} else {
 						T[i][b] = false
