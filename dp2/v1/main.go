@@ -8,7 +8,75 @@ import (
 func main() {
 	// knapsack()
 	// cmm()
-	dpv617()
+	// dpv617()
+	dpv618()
+}
+
+func dpv618() {
+	build := func(coins []int, value int) [][]bool {
+		T := make([][]bool, len(coins)+1)
+		for i, _ := range T {
+			T[i] = make([]bool, value+1)
+			T[i][0] = true
+		}
+
+		for i := 1; i <= len(coins); i++ {
+			for b, _ := range T[i] {
+				if coins[i-1] <= b {
+					// Include it if T[i-1][b-(coins[i])] == true
+					if T[i-1][b-(coins[i-1])] {
+						T[i][b] = true
+					} else if T[i-1][coins[i-1]] {
+						T[i][b] = true
+					} else {
+						T[i][b] = false
+					}
+				} else {
+					T[i][b] = T[i-1][b]
+				}
+			}
+		}
+
+		return T
+	}
+
+	tests := []struct {
+		coins    []int
+		value    int
+		solution bool
+	}{
+		{
+			coins:    []int{5, 10, 25},
+			value:    15,
+			solution: true,
+		},
+		{
+			coins:    []int{5, 10, 25},
+			value:    20,
+			solution: false,
+		},
+		{
+			coins:    []int{1, 5, 10, 25},
+			value:    16,
+			solution: true,
+		},
+		{
+			coins:    []int{1, 5, 10, 25},
+			value:    45,
+			solution: false,
+		},
+	}
+
+	for i, tt := range tests {
+		T := build(tt.coins, tt.value)
+
+		solution := T[len(tt.coins)][tt.value]
+		if solution != tt.solution {
+			log.Fatalf("[Test %d]: ERROR. Expected %v, got %v", i+1, tt.solution, solution)
+		} else {
+			log.Printf("[Test %d]: PASSED", i+1)
+		}
+	}
 }
 
 func dpv617() {
